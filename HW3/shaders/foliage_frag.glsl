@@ -4,6 +4,7 @@ in vec2 v_UV;
 in float v_Layer;
 in vec3 v_Normal;
 in vec3 v_WorldPos;
+in vec3 f_viewVertex;
 
 out vec4 FragColor;
 
@@ -11,6 +12,19 @@ uniform sampler2DArray u_TexArray;
 
 // 相機位置（世界座標，由 C++ 傳入）
 uniform vec3 u_CameraPos;
+
+vec4 WithFog(vec4 color){
+	const vec4 FOG_COLOR = vec4(0.0, 0.0, 0.0, 1) ;
+	const float MAX_DIST = 150.0 ;
+	const float MIN_DIST = 120.0 ;
+	
+	float dis = length(f_viewVertex) ;
+	float fogFactor = (MAX_DIST - dis) / (MAX_DIST - MIN_DIST) ;
+	fogFactor = clamp(fogFactor, 0.0f, 1.0f) ;
+	fogFactor = fogFactor * fogFactor ;
+	
+	return mix(FOG_COLOR, color, fogFactor) ;
+}
 
 void main()
 {
@@ -71,5 +85,6 @@ void main()
     const float EXPOSURE = 3.0f;
     vec3 mappedColor = vec3(1.0) - exp(-shadedColor * EXPOSURE);
 
-    FragColor = vec4(mappedColor, albedo.a);
+    vec4 shaded = vec4(mappedColor, albedo.a);
+    FragColor = WithFog(shaded);
 }
