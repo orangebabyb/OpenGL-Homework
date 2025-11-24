@@ -1,0 +1,123 @@
+#version 460 core
+layout(local_size_x = 256) in;
+
+// ----------------------------
+//  資料結構 (沿用你的命名)
+// ----------------------------
+struct PlantInstance {
+    vec4 position;   // xyz = pos, w = type
+};
+
+struct DrawCmd {
+    uint count;
+    uint instanceCount;
+    uint firstIndex;
+    uint baseVertex;
+    uint baseInstance;
+};
+
+// ----------------------------
+//  Buffer Bindings
+// ----------------------------
+layout(std430, binding = 0) buffer AllPlants {
+    PlantInstance g_all[];
+};
+
+layout(std430, binding = 1) buffer VisiblePlants {
+    PlantInstance g_visible[];
+};
+
+layout(std430, binding = 2) buffer DrawCommands {
+    DrawCmd g_cmds[3];
+};
+
+layout(std430, binding = 3) buffer VisibleCount {
+    uint g_visibleCount[3];
+};
+
+layout(std430, binding = 4) buffer CutMask {
+    uint g_cutMask[];   // 0 = alive, 1 = removed (被史萊姆消除)
+};
+
+// ----------------------------
+// Uniforms
+// ----------------------------
+uniform mat4 u_viewProj;
+uniform uint u_totalInstance;
+
+uniform uint u_startA;
+uniform uint u_startB;
+uniform uint u_startC;
+
+uniform vec3 u_cameraPos;
+uniform float u_gridMaxDist;
+
+uniform vec3  u_slimePos;
+uniform float u_slimeRadius;
+
+// ---------------------------------------------------------
+// 主程式
+// ---------------------------------------------------------
+void main()
+{
+    uint id = gl_GlobalInvocationID.x;
+    if (id >= u_totalInstance) return;
+
+    // ----------------------------
+    // 0. 讀 Instance
+    // ----------------------------
+    PlantInstance inst = g_all[id];
+    vec3 wp = inst.position.xyz;
+    uint typeID = uint(inst.position.w);
+
+    // ----------------------------
+    // 1. 檢查是否已被踩掉
+    // ----------------------------
+    if (g_cutMask[id] == 1u) {
+        return;  // 已消失的永遠不再顯示
+    }
+
+    // ----------------------------
+    // 2. Slime 半徑判斷
+    // ----------------------------
+    float distSlime = distance(wp, u_slimePos);
+    if (distSlime < u_slimeRadius) {
+        // 被史萊姆砍掉 → 永久消失
+        g_cutMask[id] = 1u;
+        return;
+    }
+
+    // ----------------------------
+    // 3. Frustum Culling
+    // ----------------------------
+    vec4 clip = u_viewProj * vec4(wp, 1.0);
+
+    bool visible = true;
+    if (clip.z < -clip.w) visible = false;
+    if (clip.z >  clip.w) visible = false;
+
+    // 允許 1.2 倍寬鬆邊界
+    float w1 = clip.w * 1.2;
+    if (clip.x < -w1 || clip.x > w1) visible = false;
+    if (clip.y < -w1 || clip.y > w1) visible = false;
+
+    // ----------------------------
+    // 4. 距離 Culling
+    // ----------------------------
+    float distCam = distance(wp, u_cameraPos);
+    if (distCam > u_gridMaxDist) visible = false;
+
+    if (!visible) return;
+
+    // ----------------------------
+    // 5. 寫入可見植栽
+    // ----------------------------
+    uint idx = atomicAdd(g_visibleCount[typeID], 1);
+
+    uint baseOffset =
+        (typeID == 0u) ? u_startA :
+        (typeID == 1u) ? u_startB :
+                         u_startC;
+
+    g_visible[baseOffset + idx] = inst;
+}

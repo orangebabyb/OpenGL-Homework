@@ -1,0 +1,26 @@
+#version 460 core
+layout(local_size_x = 1) in;
+
+struct IndirectDrawCmd {
+    uint count;
+    uint instanceCount;
+    uint firstIndex;
+    uint baseVertex;
+    uint baseInstance;
+};
+
+// Binding 2: Indirect Draw Command Buffer
+layout(std430, binding = 2) buffer CmdBuffer { IndirectDrawCmd cmds[]; };
+
+// Binding 3: Counter Buffer (從 cull.comp 來的結果)
+layout(std430, binding = 3) readonly buffer CounterBuffer { uint visibleCounts[]; };
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    // 我們只有 3 個 Mesh (0, 1, 2)，避免越界
+    if (idx < 3) {
+        // 將計數器的結果 (visibleCounts) 複製到繪製指令 (instanceCount)
+        // 這一步是 GPU Culling 能夠提升 FPS 的關鍵！
+        cmds[idx].instanceCount = visibleCounts[idx];
+    }
+}
