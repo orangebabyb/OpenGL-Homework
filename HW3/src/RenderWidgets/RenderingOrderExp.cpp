@@ -1,12 +1,12 @@
 #include "RenderingOrderExp.h"
 #include "../Common.h"
 
-// ¤Ş¤J¼v¹³Åª¨ú®w
+// å¼•å…¥å½±åƒè®€å–åº«
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-// ¤Ş¤J§U±Ğ´£¨Ñªº±Ä¼ËÂIÅª¨ú¾¹
-#include "../Scene/SpatialSample.h" // ®Ú¾Ú§AªººI¹Ï¸ô®|
+// å¼•å…¥åŠ©æ•™æä¾›çš„æ¡æ¨£é»è®€å–å™¨
+#include "../Scene/SpatialSample.h" // æ ¹æ“šä½ çš„æˆªåœ–è·¯å¾‘
 
 namespace INANOA {	
 
@@ -66,9 +66,9 @@ namespace INANOA {
 		}
 
 		// =========================================================
-		// [·s¼W] ½Ğ¦b¦¹³B¥[¤J Trackball ªì©l¤Æ³]©w
-		// ³]©w God View ªºªì©l¦ì¸m (Eye, Center, Up)
-		// ³o¨Ç¼Æ­È¹ïÀ³¨ì­ì¥» code ¸Ìªº setViewOrg µ¥³]©w
+		// [æ–°å¢] è«‹åœ¨æ­¤è™•åŠ å…¥ Trackball åˆå§‹åŒ–è¨­å®š
+		// è¨­å®š God View çš„åˆå§‹ä½ç½® (Eye, Center, Up)
+		// é€™äº›æ•¸å€¼å°æ‡‰åˆ°åŸæœ¬ code è£¡çš„ setViewOrg ç­‰è¨­å®š
 		m_trackball.reset(
 			glm::vec3(0.0f, 55.0f, 50.0f),  // Eye
 			glm::vec3(0.0f, 32.0f, -12.0f), // Center
@@ -76,31 +76,31 @@ namespace INANOA {
 		);
 		// =========================================================
 
-		// [·s¼W] ¸ü¤J Phase 2 ¸ê·½
+		// [æ–°å¢] è¼‰å…¥ Phase 2 è³‡æº
 		if (!initResources()) {
 			printf("Failed to initialize resources!\n");
 			return false;
 		}
 
 		// =======================================================
-		// [·s¼W] ¥[¤J³o¬q¡Iªì©l¤Æ Shader
+		// [æ–°å¢] åŠ å…¥é€™æ®µï¼åˆå§‹åŒ– Shader
 		// =======================================================
 		if (!initFoliageShader()) {
 			printf("Failed to init foliage shader\n");
 			return false;
 		}
 		
-		// [­×¥¿] ½Ğ°È¥²¸É¤W³o¤@¦æ¡I±N¸ê®Æ¶Ç°e¦Ü GPU
+		// [ä¿®æ­£] è«‹å‹™å¿…è£œä¸Šé€™ä¸€è¡Œï¼å°‡è³‡æ–™å‚³é€è‡³ GPU
 		createFoliageBuffers();
 
-		// [·s¼W] ªì©l¤Æ Culling ¸ê·½
+		// [æ–°å¢] åˆå§‹åŒ– Culling è³‡æº
 		initCullingBuffers();
 		if (!initCullingShaders()) {
 			printf("Failed to init culling shaders\n");
 			return false;
 		}
 
-		// [·s¼W] ¸ü¤J¥vµÜ©i¸ê·½
+		// [æ–°å¢] è¼‰å…¥å²èŠå§†è³‡æº
 		if (!initSlimeResources()) return false;
 		if (!initSlimeShader()) return false;
 
@@ -122,70 +122,70 @@ namespace INANOA {
 		this->m_horizontalGround->resize(this->m_playerCamera);
 	}
 
-	// [½Ğ´À´«±¼­ì¥»ªº update ¨ç¦¡]
+	// [è«‹æ›¿æ›æ‰åŸæœ¬çš„ update å‡½å¼]
 	void RenderingOrderExp::update() {
 		// =====================================================
-		// 1. God View Camera §ó·s (¨Ï¥Î Trackball)
+		// 1. God View Camera æ›´æ–° (ä½¿ç”¨ Trackball)
 		// =====================================================
-		// ±q Trackball ¨ú±o­pºâ«áªº¯x°}¸ê°T¡A¶ñ¦^ God Camera
+		// å¾ Trackball å–å¾—è¨ˆç®—å¾Œçš„çŸ©é™£è³‡è¨Šï¼Œå¡«å› God Camera
 		m_godCamera->setViewOrg(m_trackball.getEye());
 		m_godCamera->setLookCenter(m_trackball.getCenter());
 		m_godCamera->setUpVector(m_trackball.getUp());
 		m_godCamera->update();
 
 		// =====================================================
-		// 2. Player Camera §ó·s (WASD ±±¨î)
+		// 2. Player Camera æ›´æ–° (WASD æ§åˆ¶)
 		// =====================================================
-		float dt = 0.016f; // ¼ÒÀÀ Delta Time
+		float dt = 0.016f; // æ¨¡æ“¬ Delta Time
 
-		// (A) ³B²z±ÛÂà (A/D Áä)
+		// (A) è™•ç†æ—‹è½‰ (A/D éµ)
 		float rotSpeed = 0.1f;
 
-		// m_playerYaw ¬O§A¦b .h ÀÉ·s¼WªºÅÜ¼Æ
+		// m_playerYaw æ˜¯ä½ åœ¨ .h æª”æ–°å¢çš„è®Šæ•¸
 		if (m_playerInput[2]) m_playerYaw -= rotSpeed * dt; // A: Turn Left
 		if (m_playerInput[3]) m_playerYaw += rotSpeed * dt; // D: Turn Right
 
-		// (B) ³B²z²¾°Ê (W/S Áä) - §Q¥Î¬J¦³ªºÅÜ¼Æ¬[ºc
-		// ­«¸m²¾°Ê¦V¶q
+		// (B) è™•ç†ç§»å‹• (W/S éµ) - åˆ©ç”¨æ—¢æœ‰çš„è®Šæ•¸æ¶æ§‹
+		// é‡ç½®ç§»å‹•å‘é‡
 		this->m_cameraForwardMagnitude = glm::vec3(0.0f);
 
-		// ®Ú¾Ú Yaw ­pºâ¡u«e¤è¡vªº¤è¦V¦V¶q (¥u¦b¤ô¥­­±²¾°Ê)
-		// X = sin(yaw), Z = -cos(yaw) ¬O±`¨£ªº OpenGL «e¤è­pºâ
+		// æ ¹æ“š Yaw è¨ˆç®—ã€Œå‰æ–¹ã€çš„æ–¹å‘å‘é‡ (åªåœ¨æ°´å¹³é¢ç§»å‹•)
+		// X = sin(yaw), Z = -cos(yaw) æ˜¯å¸¸è¦‹çš„ OpenGL å‰æ–¹è¨ˆç®—
 		glm::vec3 forwardDir = glm::normalize(glm::vec3(sin(m_playerYaw), 0.0f, -cos(m_playerYaw)));
 
-		float moveSpeed = 5.0f; // ¥i¦Û¦æ½Õ¾ã³t«×
+		float moveSpeed = 5.0f; // å¯è‡ªè¡Œèª¿æ•´é€Ÿåº¦
 
-		// ¦pªG«ö¤U W¡A±N¡u«e¤è¦V¶q¡v¥[¨ì Magnitude
+		// å¦‚æœæŒ‰ä¸‹ Wï¼Œå°‡ã€Œå‰æ–¹å‘é‡ã€åŠ åˆ° Magnitude
 		if (m_playerInput[0]) {
 			this->m_cameraForwardMagnitude += forwardDir * moveSpeed * dt;
 		}
-		// ¦pªG«ö¤U S¡A±N¡u«á¤è¦V¶q¡v¥[¨ì Magnitude
+		// å¦‚æœæŒ‰ä¸‹ Sï¼Œå°‡ã€Œå¾Œæ–¹å‘é‡ã€åŠ åˆ° Magnitude
 		if (m_playerInput[1]) {
 			this->m_cameraForwardMagnitude -= forwardDir * moveSpeed * dt;
 		}
 
-		// (C) ®M¥Î²¾°Ê»P±ÛÂà
-		// ¨Ï¥Î¬J¦³ªº forward() ¨ç¦¡Åı¬Û¾÷²¾°Ê
-		// ª`·N¡G³oÃä§Ú­Ì¤w¸g¦Û¤vºâ¦n¤è¦V¤F¡A©Ò¥H forward() ¤º¥u»İ³æ¯Â¦ì²¾
-		// ¦ı¬°¤F°t¦X Framework ªº forward ¨ç¦¡¯S©Ê (³q±`¬O²Ö¥[ position)¡A§Ú­Ì³o¼Ë°µ¡G
+		// (C) å¥—ç”¨ç§»å‹•èˆ‡æ—‹è½‰
+		// ä½¿ç”¨æ—¢æœ‰çš„ forward() å‡½å¼è®“ç›¸æ©Ÿç§»å‹•
+		// æ³¨æ„ï¼šé€™é‚Šæˆ‘å€‘å·²ç¶“è‡ªå·±ç®—å¥½æ–¹å‘äº†ï¼Œæ‰€ä»¥ forward() å…§åªéœ€å–®ç´”ä½ç§»
+		// ä½†ç‚ºäº†é…åˆ Framework çš„ forward å‡½å¼ç‰¹æ€§ (é€šå¸¸æ˜¯ç´¯åŠ  position)ï¼Œæˆ‘å€‘é€™æ¨£åšï¼š
 		this->m_playerCamera->forward(this->m_cameraForwardMagnitude, true);
 
-		// ¤â°Ê§ó·s LookAt Target¡A½T«O±ÛÂà¥Í®Ä
-		// ·í«e¦ì¸m
+		// æ‰‹å‹•æ›´æ–° LookAt Targetï¼Œç¢ºä¿æ—‹è½‰ç”Ÿæ•ˆ
+		// ç•¶å‰ä½ç½®
 		glm::vec3 currentPos = this->m_playerCamera->viewOrig();
-		// ·sªºÆ[¬İÂI = ·í«e¦ì¸m + «e¤è¤è¦V
+		// æ–°çš„è§€çœ‹é» = ç•¶å‰ä½ç½® + å‰æ–¹æ–¹å‘
 		glm::vec3 newCenter = currentPos + forwardDir * 10.0f;
 
 		this->m_playerCamera->setLookCenter(newCenter);
 		this->m_playerCamera->update();
 
 		// =====================================================
-		// 3. §ó·s³õ´ºª«¥ó    
+		// 3. æ›´æ–°å ´æ™¯ç‰©ä»¶    
 		// =====================================================
 		this->m_viewFrustum->update(this->m_playerCamera);
 		this->m_horizontalGround->update(this->m_playerCamera);
 
-		// [·s¼W] §ó·s­y¸ñ
+		// [æ–°å¢] æ›´æ–°è»Œè·¡
 		m_slimeTrajectory.update();
 		m_slimePos = m_slimeTrajectory.position();
 	}
@@ -195,11 +195,11 @@ namespace INANOA {
 		this->m_renderer->clearRenderTarget();
 		const int HW = this->m_frameWidth * 0.5;
 
-		// --- °õ¦æ Culling ---
+		// --- åŸ·è¡Œ Culling ---
 		performCulling(m_playerCamera);
 
 		// ============================================================
-		//  god view (¥ªÃä)
+		//  god view (å·¦é‚Š)
 		// ============================================================
 		this->m_renderer->setCamera(
 			m_godCamera->projMatrix(),
@@ -208,18 +208,18 @@ namespace INANOA {
 		);
 		this->m_renderer->setViewport(0, 0, HW, this->m_frameHeight);
 
-		// ¦aªO
+		// åœ°æ¿
 		glEnable(GL_DEPTH_TEST);
 		this->m_renderer->setShadingModel(OPENGL::ShadingModelType::PROCEDURAL_GRID);
 		this->m_horizontalGround->render();
 
-		// ¯ó
+		// è‰
 		renderFoliage(m_godCamera);
 
 		// slime
 		renderSlime(m_godCamera, m_slimePos);
 
-		// ®Ø½u overlay¡]³Ì«áµe¡^
+		// æ¡†ç·š overlayï¼ˆæœ€å¾Œç•«ï¼‰
 		glDisable(GL_DEPTH_TEST);
 		this->m_renderer->setShadingModel(OPENGL::ShadingModelType::UNLIT);
 		this->m_viewFrustum->render();
@@ -236,18 +236,18 @@ namespace INANOA {
 		);
 		this->m_renderer->setViewport(HW, 0, HW, this->m_frameHeight);
 
-		// ¦aªO
+		// åœ°æ¿
 		glEnable(GL_DEPTH_TEST);
 		this->m_renderer->setShadingModel(OPENGL::ShadingModelType::PROCEDURAL_GRID);
 		this->m_horizontalGround->render();
 
-		// ¯ó
+		// è‰
 		renderFoliage(m_playerCamera);
 
 		// slime
 		renderSlime(m_playerCamera, m_slimePos);
 
-		// ®Ø½u overlay
+		// æ¡†ç·š overlay
 		glDisable(GL_DEPTH_TEST);
 		this->m_renderer->setShadingModel(OPENGL::ShadingModelType::UNLIT);
 		this->m_viewFrustum->render();
@@ -255,15 +255,15 @@ namespace INANOA {
 	}
 
 
-	// ±µ¦¬¨Ó¦Û Main ªº WASD ª¬ºA
+	// æ¥æ”¶ä¾†è‡ª Main çš„ WASD ç‹€æ…‹
 	void RenderingOrderExp::setPlayerMoveState(int dirIndex, bool pressed) {
-		// m_playerInput ¬O§A¦b .h ÀÉ«Å§iªº bool °}¦C
+		// m_playerInput æ˜¯ä½ åœ¨ .h æª”å®£å‘Šçš„ bool é™£åˆ—
 		if (dirIndex >= 0 && dirIndex < 4) {
 			m_playerInput[dirIndex] = pressed;
 		}
 	}
 
-	// --- God View Trackball ±±¨î¤¶­± ---
+	// --- God View Trackball æ§åˆ¶ä»‹é¢ ---
 	void RenderingOrderExp::onGodViewRotateBegin(float x, float y) {
 		m_trackball.beginRotate(x, y);
 	}
@@ -281,37 +281,37 @@ namespace INANOA {
 	}
 
 	void RenderingOrderExp::onGodViewZoom(float delta) {
-		// ª½±µ½Õ¾ã God Camera ªº¶ZÂ÷
-		// delta ¨Ó¦Û·Æ¹«ºu½ü¡A­¼¤W­¿²v½Õ¾ã³t«×
+		// ç›´æ¥èª¿æ•´ God Camera çš„è·é›¢
+		// delta ä¾†è‡ªæ»‘é¼ æ»¾è¼ªï¼Œä¹˜ä¸Šå€ç‡èª¿æ•´é€Ÿåº¦
 		m_godCamera->distanceOffset(-delta * 2.0f);
 	}
 
 	// =========================================================
-	// Phase 2: ¸ê·½¸ü¤J¹ê§@
+	// Phase 2: è³‡æºè¼‰å…¥å¯¦ä½œ
 	// =========================================================
 
 	bool RenderingOrderExp::initResources() {
 		// --------------------------------------------------------
-		// [·s¼W] ÀË¬d¥Ø«e¨Ï¥Îªº GPU
+		// [æ–°å¢] æª¢æŸ¥ç›®å‰ä½¿ç”¨çš„ GPU
 		const GLubyte* renderer = glGetString(GL_RENDERER);
 		const GLubyte* version = glGetString(GL_VERSION);
 		printf("Renderer: %s\n", renderer);
 		printf("OpenGL Version: %s\n", version);
 		// --------------------------------------------------------
 		
-		// 1. ¸ü¤J¼Ò«¬ (OBJ)
-		// ½Ğ½T»{ assets ¸ô®|¬O§_¥¿½T¡A³o¹ïÀ³¨ì§@·~´£¨ÑªºÀÉ®×
+		// 1. è¼‰å…¥æ¨¡å‹ (OBJ)
+		// è«‹ç¢ºèª assets è·¯å¾‘æ˜¯å¦æ­£ç¢ºï¼Œé€™å°æ‡‰åˆ°ä½œæ¥­æä¾›çš„æª”æ¡ˆ
 		if (!loadOBJ("assets/models/foliages/grassB.obj", m_meshes[0])) return false;
 		if (!loadOBJ("assets/models/foliages/bush01_lod2.obj", m_meshes[1])) return false;
 		if (!loadOBJ("assets/models/foliages/bush05_lod2.obj", m_meshes[2])) return false;
 
-		// [·s¼W] §â¤T­Ó mesh ¾ã¦X¦¨¤@­Ó¤j VAO¡Aµ¹ MultiDraw ¥Î
+		// [æ–°å¢] æŠŠä¸‰å€‹ mesh æ•´åˆæˆä¸€å€‹å¤§ VAOï¼Œçµ¦ MultiDraw ç”¨
 		if (!buildFoliageMultiDrawVAO()) {
 			printf("Failed to build merged foliage VAO\n");
 			return false;
 		}
 
-		// 2. «Ø¥ß Texture Array (±N¤T±i¶K¹Ï¦X¨Ö) [cite: 61-64]
+		// 2. å»ºç«‹ Texture Array (å°‡ä¸‰å¼µè²¼åœ–åˆä½µ) [cite: 61-64]
 		std::vector<std::string> texFiles = {
 			"assets/textures/grassB_albedo.png", // Layer 0
 			"assets/textures/bush01.png",        // Layer 1
@@ -320,17 +320,17 @@ namespace INANOA {
 		m_texArrayHandle = createTextureArray(texFiles);
 		if (m_texArrayHandle == 0) return false;
 
-		// 3. ¸ü¤J¤À§GÂI¸ê®Æ
+		// 3. è¼‰å…¥åˆ†ä½ˆé»è³‡æ–™
 		loadSpatialSamples();
 
 		return true;
 	}
 
-	// Â²³æªº OBJ ¸ü¤J¾¹ (¥uÅª¨ú v, vt, vn, f)
-	// ¨Ï¥Î Common.h ªº loadObj ¨Ó¸ü¤J¼Ò«¬
+	// ç°¡å–®çš„ OBJ è¼‰å…¥å™¨ (åªè®€å– v, vt, vn, f)
+	// ä½¿ç”¨ Common.h çš„ loadObj ä¾†è¼‰å…¥æ¨¡å‹
 	bool RenderingOrderExp::loadOBJ(const std::string& path, SimpleMesh& outMesh) {
-		// 1. ©I¥s Common.h ªº¥ş°ì¨ç¦¡¸ü¤J¼Ò«¬
-		// ª`·N¡GloadObj ¦^¶Çªº¬O std::vector<MeshData>
+		// 1. å‘¼å« Common.h çš„å…¨åŸŸå‡½å¼è¼‰å…¥æ¨¡å‹
+		// æ³¨æ„ï¼šloadObj å›å‚³çš„æ˜¯ std::vector<MeshData>
 		std::vector<MeshData> meshes = loadObj(path.c_str());
 
 		if (meshes.empty()) {
@@ -338,10 +338,10 @@ namespace INANOA {
 			return false;
 		}
 
-		// §Ú­Ì¥u¨ú²Ä¤@­Ó Mesh (³q±`§@·~ªº¼Ò«¬¥u¦³¤@­Ó shape)
+		// æˆ‘å€‘åªå–ç¬¬ä¸€å€‹ Mesh (é€šå¸¸ä½œæ¥­çš„æ¨¡å‹åªæœ‰ä¸€å€‹ shape)
 		const MeshData& data = meshes[0];
 
-		// ©w¸q³»ÂIµ²ºc (¥Î¨Ó¾ã²z¸ê®Æµ¹ OpenGL)
+		// å®šç¾©é ‚é»çµæ§‹ (ç”¨ä¾†æ•´ç†è³‡æ–™çµ¦ OpenGL)
 		struct Vertex {
 			glm::vec3 p;
 			glm::vec3 n;
@@ -350,33 +350,33 @@ namespace INANOA {
 		std::vector<Vertex> finalVertices;
 		std::vector<unsigned int> finalIndices;
 
-		// Common.h ªº loadObj ¤w¸g³B²z¦n index ¤F
-		// data.positions ¬O¥­©Zªº float array (x,y,z, x,y,z...)
+		// Common.h çš„ loadObj å·²ç¶“è™•ç†å¥½ index äº†
+		// data.positions æ˜¯å¹³å¦çš„ float array (x,y,z, x,y,z...)
 		size_t numVertices = data.positions.size() / 3;
 
 		finalVertices.reserve(numVertices);
 		finalIndices.reserve(data.indices.size());
 
-		// 2. ¸ê®ÆÂà´«¡G±q MeshData Âà¬° Interleaved Vertex Struct
+		// 2. è³‡æ–™è½‰æ›ï¼šå¾ MeshData è½‰ç‚º Interleaved Vertex Struct
 		for (size_t i = 0; i < numVertices; i++) {
 			Vertex v;
 
-			// Åª¨ú¦ì¸m
+			// è®€å–ä½ç½®
 			v.p.x = data.positions[i * 3 + 0];
 			v.p.y = data.positions[i * 3 + 1];
 			v.p.z = data.positions[i * 3 + 2];
 
-			// Åª¨úªk½u (¦pªG¦³)
+			// è®€å–æ³•ç·š (å¦‚æœæœ‰)
 			if (!data.normals.empty()) {
 				v.n.x = data.normals[i * 3 + 0];
 				v.n.y = data.normals[i * 3 + 1];
 				v.n.z = data.normals[i * 3 + 2];
 			}
 			else {
-				v.n = glm::vec3(0, 1, 0); // ¹w³]ªk½u
+				v.n = glm::vec3(0, 1, 0); // é è¨­æ³•ç·š
 			}
 
-			// Åª¨ú UV (¦pªG¦³)
+			// è®€å– UV (å¦‚æœæœ‰)
 			if (!data.texcoords.empty()) {
 				v.t.x = data.texcoords[i * 2 + 0];
 				v.t.y = data.texcoords[i * 2 + 1];
@@ -388,12 +388,12 @@ namespace INANOA {
 			finalVertices.push_back(v);
 		}
 
-		// ½Æ»s Indices
+		// è¤‡è£½ Indices
 		for (unsigned int idx : data.indices) {
 			finalIndices.push_back(idx);
 		}
 
-		// 3. «Ø¥ß OpenGL Buffers
+		// 3. å»ºç«‹ OpenGL Buffers
 		if (outMesh.vao != 0) glDeleteVertexArrays(1, &outMesh.vao);
 		if (outMesh.vbo != 0) glDeleteBuffers(1, &outMesh.vbo);
 		if (outMesh.ebo != 0) glDeleteBuffers(1, &outMesh.ebo);
@@ -410,7 +410,7 @@ namespace INANOA {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, outMesh.ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, finalIndices.size() * sizeof(unsigned int), finalIndices.data(), GL_STATIC_DRAW);
 
-		// ³]©w Vertex Attributes (¹ïÀ³ Shader ªº layout location)
+		// è¨­å®š Vertex Attributes (å°æ‡‰ Shader çš„ layout location)
 		// Location 0: Pos
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, p));
@@ -436,7 +436,7 @@ namespace INANOA {
 		if (files.empty()) return 0;
 
 		int w, h, ch;
-		// Åª¨ú²Ä¤@±i¹Ï¥H¨ú±o¤Ø¤o
+		// è®€å–ç¬¬ä¸€å¼µåœ–ä»¥å–å¾—å°ºå¯¸
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char* test = stbi_load(files[0].c_str(), &w, &h, &ch, 4);
 		if (!test) return 0;
@@ -446,10 +446,10 @@ namespace INANOA {
 		glGenTextures(1, &texID);
 		glBindTexture(GL_TEXTURE_2D_ARRAY, texID);
 
-		// ¤À°tÀx¦sªÅ¶¡ (Mipmap ¼h¼Æ³]¬° 4 ©Î§ó¦h)
+		// åˆ†é…å„²å­˜ç©ºé–“ (Mipmap å±¤æ•¸è¨­ç‚º 4 æˆ–æ›´å¤š)
 		glTexStorage3D(GL_TEXTURE_2D_ARRAY, 8, GL_RGBA8, w, h, (GLsizei)files.size());
 
-		// ³v¼h¤W¶Ç [cite: 89-90]
+		// é€å±¤ä¸Šå‚³ [cite: 89-90]
 		for (int i = 0; i < files.size(); i++) {
 			unsigned char* data = stbi_load(files[i].c_str(), &w, &h, &ch, 4);
 			if (data) {
@@ -461,7 +461,7 @@ namespace INANOA {
 			}
 		}
 
-		// ³]©w°Ñ¼Æ»P Mipmap [cite: 91-92]
+		// è¨­å®šåƒæ•¸èˆ‡ Mipmap [cite: 91-92]
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -474,17 +474,17 @@ namespace INANOA {
 	void RenderingOrderExp::loadSpatialSamples() {
 		using namespace INANOA::SCENE::EXPERIMENTAL;
 
-		// ½Ğ½T»{ÀÉ¦W»P§@·~¤@­P [cite: 131]
+		// è«‹ç¢ºèªæª”åèˆ‡ä½œæ¥­ä¸€è‡´ [cite: 131]
 		std::vector<std::string> files = {
 			"assets/models/spatialSamples/poissonPoints_155304s.ss2", // Grass
 			"assets/models/spatialSamples/poissonPoints_1010s.ss2",   // Bush1
 			"assets/models/spatialSamples/poissonPoints_2797s.ss2"    // Bush2
 		};
 
-		// ¥i¥H¦b³o¸Ì½Õ¾ã±K«×
-		const int strideGrass = 1;   // ¯ó¡G¨C 4 ­ÓÂI¨ú 1 ­Ó
-		const int strideBushB = 1;   // Bush01¡G¥ş¥Î
-		const int strideBushC = 1;   // Bush05¡G¥ş¥Î
+		// å¯ä»¥åœ¨é€™è£¡èª¿æ•´å¯†åº¦
+		const int strideGrass = 1;   // è‰ï¼šæ¯ 4 å€‹é»å– 1 å€‹
+		const int strideBushB = 1;   // Bush01ï¼šå…¨ç”¨
+		const int strideBushC = 1;   // Bush05ï¼šå…¨ç”¨
 
 		m_allInstancesCPU.clear();
 		unsigned int currentOffset = 0;
@@ -509,10 +509,10 @@ namespace INANOA {
 			for (int i = 0; i < count; i += stride) {
 				const float* p = samp->position(i); // (x, y, z)
 
-				// ¦pªG§A·QÅı´Óª«³£¶K¦b¦a­±¤W¡A¥i¥H§â y ©T©w¦¨ 0
+				// å¦‚æœä½ æƒ³è®“æ¤ç‰©éƒ½è²¼åœ¨åœ°é¢ä¸Šï¼Œå¯ä»¥æŠŠ y å›ºå®šæˆ 0
 				// glm::vec4 pos(p[0], 0.0f, p[2], (float)typeID);
 
-				glm::vec4 pos(p[0], p[1], p[2], (float)typeID); // «O«ù­ì¨Óªº
+				glm::vec4 pos(p[0], p[1], p[2], (float)typeID); // ä¿æŒåŸä¾†çš„
 
 				m_allInstancesCPU.push_back({ pos });
 				++used;
@@ -529,45 +529,45 @@ namespace INANOA {
 	}
 
 	void RenderingOrderExp::createFoliageBuffers() {
-		// 1. «Ø¥ß Source SSBO (¦s©ñ©Ò¦³´Óª«¸ê®Æ)
+		// 1. å»ºç«‹ Source SSBO (å­˜æ”¾æ‰€æœ‰æ¤ç‰©è³‡æ–™)
 		// ---------------------------------------------------------
 		glGenBuffers(1, &m_ssbo_AllPlants);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ssbo_AllPlants);
 
-		// ±N vector ªº¸ê®Æ¤@¦¸©Ê¤W¶Ç¨ì GPU
+		// å°‡ vector çš„è³‡æ–™ä¸€æ¬¡æ€§ä¸Šå‚³åˆ° GPU
 		glBufferData(GL_SHADER_STORAGE_BUFFER,
 			m_allInstancesCPU.size() * sizeof(PlantInstance),
 			m_allInstancesCPU.data(),
-			GL_STATIC_DRAW); // ¥Ø«e¬OÀRºAªº¡A¤§«á Culling ·|¥Î¨ì¥t¤@­Ó Dynamic Buffer
+			GL_STATIC_DRAW); // ç›®å‰æ˜¯éœæ…‹çš„ï¼Œä¹‹å¾Œ Culling æœƒç”¨åˆ°å¦ä¸€å€‹ Dynamic Buffer
 
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // ¸Ñ°£¸j©w
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // è§£é™¤ç¶å®š
 
-		// 2. «Ø¥ß Indirect Command Buffer (¦s©ñÃ¸»s«ü¥O)
+		// 2. å»ºç«‹ Indirect Command Buffer (å­˜æ”¾ç¹ªè£½æŒ‡ä»¤)
 		// ---------------------------------------------------------
-		std::vector<IndirectDrawCmd> cmds(3); // §Ú­Ì¦³ 3 ºØ´Óª« (Mesh)
+		std::vector<IndirectDrawCmd> cmds(3); // æˆ‘å€‘æœ‰ 3 ç¨®æ¤ç‰© (Mesh)
 
-		// ³]©w Grass (Type 0)
-		//cmds[0].count = m_meshes[0].indexCount;      // ¤@Áû¯ó¦³¦h¤Ö­Ó³»ÂI¯Á¤Ş
-		//cmds[0].instanceCount = m_plantCounts[0];    // Á`¦@¦³¦h¤ÖÁû¯ó
-		//cmds[0].firstIndex = m_firstIndex[0];   // ¡¹ §ï¦¨¦X¨Ö«áªº offset
-		//cmds[0].baseVertex = m_baseVertex[0];   // ¡¹
-		//cmds[0].baseInstance = m_plantOffsets[0];    // [­«­n] SSBO Åª¨ú®Éªº°¾²¾¶q
+		// è¨­å®š Grass (Type 0)
+		//cmds[0].count = m_meshes[0].indexCount;      // ä¸€é¡†è‰æœ‰å¤šå°‘å€‹é ‚é»ç´¢å¼•
+		//cmds[0].instanceCount = m_plantCounts[0];    // ç¸½å…±æœ‰å¤šå°‘é¡†è‰
+		//cmds[0].firstIndex = m_firstIndex[0];   // â˜… æ”¹æˆåˆä½µå¾Œçš„ offset
+		//cmds[0].baseVertex = m_baseVertex[0];   // â˜…
+		//cmds[0].baseInstance = m_plantOffsets[0];    // [é‡è¦] SSBO è®€å–æ™‚çš„åç§»é‡
 
-		//// ³]©w Bush1 (Type 1)
+		//// è¨­å®š Bush1 (Type 1)
 		//cmds[1].count = m_meshes[1].indexCount;
 		//cmds[1].instanceCount = m_plantCounts[1];
-		//cmds[1].firstIndex = m_firstIndex[1];   // ¡¹
-		//cmds[1].baseVertex = m_baseVertex[1];   // ¡¹
+		//cmds[1].firstIndex = m_firstIndex[1];   // â˜…
+		//cmds[1].baseVertex = m_baseVertex[1];   // â˜…
 		//cmds[1].baseInstance = m_plantOffsets[1];
 
-		//// ³]©w Bush2 (Type 2)
+		//// è¨­å®š Bush2 (Type 2)
 		//cmds[2].count = m_meshes[2].indexCount;
 		//cmds[2].instanceCount = m_plantCounts[2];
-		//cmds[2].firstIndex = m_firstIndex[2];   // ¡¹
-		//cmds[2].baseVertex = m_baseVertex[2];   // ¡¹
+		//cmds[2].firstIndex = m_firstIndex[2];   // â˜…
+		//cmds[2].baseVertex = m_baseVertex[2];   // â˜…
 		//cmds[2].baseInstance = m_plantOffsets[2];
 
-		// [MOSS °jÁ×]¡G¨Ï¥Î lambda ¶ñ¼g command¡A§ïÅÜ½á­Èµ²ºc
+		// [MOSS è¿´é¿]ï¼šä½¿ç”¨ lambda å¡«å¯« commandï¼Œæ”¹è®Šè³¦å€¼çµæ§‹
 		auto FillCmd = [&](int id) {
 			cmds[id].count = m_meshes[id].indexCount;
 			cmds[id].instanceCount = m_plantCounts[id];
@@ -576,25 +576,25 @@ namespace INANOA {
 			cmds[id].baseInstance = m_plantOffsets[id];
 			};
 
-		// ®i¶}©I¥s
+		// å±•é–‹å‘¼å«
 		FillCmd(0);
 		FillCmd(1);
 		FillCmd(2);
 
-		// ¤W¶Ç«ü¥O¨ì GPU
+		// ä¸Šå‚³æŒ‡ä»¤åˆ° GPU
 		glGenBuffers(1, &m_ssbo_Indirect);
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_ssbo_Indirect);
 		glBufferData(GL_DRAW_INDIRECT_BUFFER,
 			cmds.size() * sizeof(IndirectDrawCmd),
 			cmds.data(),
-			GL_DYNAMIC_DRAW); // ¤§«á Compute Shader ·|­×§ï¥¦¡A©Ò¥H¥Î Dynamic
+			GL_DYNAMIC_DRAW); // ä¹‹å¾Œ Compute Shader æœƒä¿®æ”¹å®ƒï¼Œæ‰€ä»¥ç”¨ Dynamic
 
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 
 		printf("Foliage Buffers Created. Total Plants: %zu\n", m_allInstancesCPU.size());
 	}
 
-	// »²§U¨ç¦¡¡GÅª¨ú¨Ã½sÄ¶ Shader
+	// è¼”åŠ©å‡½å¼ï¼šè®€å–ä¸¦ç·¨è­¯ Shader
 	GLuint createShader(const char* vsPath, const char* fsPath) {
 		auto readFile = [](const char* p) -> std::string {
 			FILE* f = fopen(p, "rb");
@@ -635,7 +635,7 @@ namespace INANOA {
 		return prog;
 	}
 
-	// ªì©l¤Æ Foliage Shader
+	// åˆå§‹åŒ– Foliage Shader
 	bool RenderingOrderExp::initFoliageShader() {
 		m_programFoliage = createShader("shaders/foliage_vert.glsl", "shaders/foliage_frag.glsl");
 		return m_programFoliage != 0;
@@ -655,8 +655,8 @@ namespace INANOA {
 		glUniformMatrix4fv(glGetUniformLocation(m_programFoliage, "u_View"), 1, GL_FALSE, &view[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(m_programFoliage, "u_Proj"), 1, GL_FALSE, &proj[0][0]);
 
-		// --- camera position for Phong (V ¦V¶q¥Î) ---
-		glm::vec3 camPos = cam->viewOrig(); // §Aªº Camera class ¥»¨Ó´N¦³
+		// --- camera position for Phong (V å‘é‡ç”¨) ---
+		glm::vec3 camPos = cam->viewOrig(); // ä½ çš„ Camera class æœ¬ä¾†å°±æœ‰
 		GLint locCam = glGetUniformLocation(m_programFoliage, "u_CameraPos");
 		if (locCam >= 0)
 			glUniform3fv(locCam, 1, &camPos[0]);
@@ -684,9 +684,9 @@ namespace INANOA {
 		glUseProgram(prevProgram);
 	}
 
-	// ªì©l¤Æ Compute Shaders
+	// åˆå§‹åŒ– Compute Shaders
 	bool RenderingOrderExp::initCullingShaders() {
-		// «Ø¥ß¤@­Ó±Mªù¸ü¤J Compute Shader ªº helper lambda
+		// å»ºç«‹ä¸€å€‹å°ˆé–€è¼‰å…¥ Compute Shader çš„ helper lambda
 		auto createCompute = [](const char* path) -> GLuint {
 			FILE* f = fopen(path, "rb");
 			if (!f) return 0;
@@ -716,25 +716,25 @@ namespace INANOA {
 		return (m_programCull != 0 && m_programUpdateCmd != 0);
 	}
 
-	// ªì©l¤Æ Culling ¥Îªº Buffers
+	// åˆå§‹åŒ– Culling ç”¨çš„ Buffers
 	void RenderingOrderExp::initCullingBuffers() {
-		// 1. Visible Buffer (¤j¤p¸ò Source ¤@¼Ë¤j¡A¦]¬°³ÌÃa±¡ªp¬O¥ş³¡¥i¨£)
+		// 1. Visible Buffer (å¤§å°è·Ÿ Source ä¸€æ¨£å¤§ï¼Œå› ç‚ºæœ€å£æƒ…æ³æ˜¯å…¨éƒ¨å¯è¦‹)
 		//glGenBuffers(1, &m_ssbo_Visible);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ssbo_Visible);
-		//// ¥u»İ¤À°tªÅ¶¡¡A¤£»İ­n¤W¶Ç¸ê®Æ (NULL)
+		//// åªéœ€åˆ†é…ç©ºé–“ï¼Œä¸éœ€è¦ä¸Šå‚³è³‡æ–™ (NULL)
 		//glBufferData(GL_SHADER_STORAGE_BUFFER,
 		//	m_allInstancesCPU.size() * sizeof(PlantInstance),
 		//	NULL,
 		//	GL_DYNAMIC_COPY);
 
-		//// 2. Counter Buffer (¦s 3 ­Ó uint¡A¤À§O¬O¤TºØ´Óª«ªº¼Æ¶q)
+		//// 2. Counter Buffer (å­˜ 3 å€‹ uintï¼Œåˆ†åˆ¥æ˜¯ä¸‰ç¨®æ¤ç‰©çš„æ•¸é‡)
 		//glGenBuffers(1, &m_ssbo_Counter);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ssbo_Counter);
 		//glBufferData(GL_SHADER_STORAGE_BUFFER, 3 * sizeof(unsigned int), NULL, GL_DYNAMIC_DRAW);
 
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-		//// ===== ·s¼W¡GCutMask¡Aªì©l¥ş 0 =====
+		//// ===== æ–°å¢ï¼šCutMaskï¼Œåˆå§‹å…¨ 0 =====
 		//glGenBuffers(1, &m_ssbo_CutMask);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ssbo_CutMask);
 		//std::vector<unsigned int> zeros(m_allInstancesCPU.size(), 0u);
@@ -744,7 +744,7 @@ namespace INANOA {
 		//	GL_DYNAMIC_DRAW);
 
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-		// 1. Visible Buffer (Output) - ¥u¤À°tªÅ¶¡¡Aµ¹ NULL
+		// 1. Visible Buffer (Output) - åªåˆ†é…ç©ºé–“ï¼Œçµ¦ NULL
 		m_ssbo_Visible = CreateStorageBuffer(
 			m_allInstancesCPU.size() * sizeof(PlantInstance),
 			nullptr,
@@ -752,7 +752,7 @@ namespace INANOA {
 		);
 
 		// 2. Counter Buffer (Atomic Counter)
-		// ³o¸Ì§Ú­Ìª½±µªì©l¤Æ¬° 0¡A¬Ù¥h render loop ¸Ì²Ä¤@¦¸ªº reset (ÁöµM render ¸ÌÁÙ¬O­n²M)
+		// é€™è£¡æˆ‘å€‘ç›´æ¥åˆå§‹åŒ–ç‚º 0ï¼Œçœå» render loop è£¡ç¬¬ä¸€æ¬¡çš„ reset (é›–ç„¶ render è£¡é‚„æ˜¯è¦æ¸…)
 		unsigned int zeros[3] = { 0, 0, 0 };
 		m_ssbo_Counter = CreateStorageBuffer(
 			sizeof(zeros),
@@ -760,8 +760,8 @@ namespace INANOA {
 			GL_DYNAMIC_DRAW
 		);
 
-		// 3. CutMask Buffer (¦pªGÁÙ­n¥Î¨ìªº¸Ü)
-		// ¥Î vector «Øºc¤lª½±µ¥Í¦¨¥ş 0 ¸ê®Æ
+		// 3. CutMask Buffer (å¦‚æœé‚„è¦ç”¨åˆ°çš„è©±)
+		// ç”¨ vector å»ºæ§‹å­ç›´æ¥ç”Ÿæˆå…¨ 0 è³‡æ–™
 		std::vector<unsigned int> maskData(m_allInstancesCPU.size(), 0u);
 		m_ssbo_CutMask = CreateStorageBuffer(
 			maskData.size() * sizeof(unsigned int),
@@ -770,49 +770,49 @@ namespace INANOA {
 		);
 	}
 
-	// °õ¦æ Culling (³o¬O¨C¤@´V³£­n©I¥sªº)
+	// åŸ·è¡Œ Culling (é€™æ˜¯æ¯ä¸€å¹€éƒ½è¦å‘¼å«çš„)
 	// [RenderingOrderExp.cpp] performCulling
 
 	void RenderingOrderExp::performCulling(const Camera* cam) {
 		if (m_programCull == 0) return;
 		GLint prevProgram = 0;
 		glGetIntegerv(GL_CURRENT_PROGRAM, &prevProgram);
-		// 1. ­«¸m­p¼Æ¾¹
+		// 1. é‡ç½®è¨ˆæ•¸å™¨
 		const unsigned int zeros[3] = { 0, 0, 0 };
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ssbo_Counter);
 		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(zeros), zeros);
 
-		// 2. °õ¦æ Culling Shader
+		// 2. åŸ·è¡Œ Culling Shader
 		glUseProgram(m_programCull);
 
-		// --- Uniforms (½T«O¦WºÙ»P Shader ¤@­P) ---
+		// --- Uniforms (ç¢ºä¿åç¨±èˆ‡ Shader ä¸€è‡´) ---
 		glm::mat4 vp = cam->projMatrix() * cam->viewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(m_programCull, "u_viewProj"), 1, GL_FALSE, &vp[0][0]);
 		glUniform1ui(glGetUniformLocation(m_programCull, "u_totalInstance"), (GLuint)m_allInstancesCPU.size());
 
-		// ³o¨Ç¬O°Ñ¦Òµª®×»İ­nªºÃB¥~°Ñ¼Æ¡A½Ğ¸É¤W¡G
+		// é€™äº›æ˜¯åƒè€ƒç­”æ¡ˆéœ€è¦çš„é¡å¤–åƒæ•¸ï¼Œè«‹è£œä¸Šï¼š
 		glUniform1ui(glGetUniformLocation(m_programCull, "u_startA"), m_plantOffsets[0]);
 		glUniform1ui(glGetUniformLocation(m_programCull, "u_startB"), m_plantOffsets[1]);
 		glUniform1ui(glGetUniformLocation(m_programCull, "u_startC"), m_plantOffsets[2]);
 
-		// Grid Fog Distance (¿ï¾Ü©Ê¡A¨¾¤î»·³B¬ğµM¤ÁÂ_)
-		glUniform1f(glGetUniformLocation(m_programCull, "u_gridMaxDist"), 130.0f);
+		// Grid Fog Distance (é¸æ“‡æ€§ï¼Œé˜²æ­¢é è™•çªç„¶åˆ‡æ–·)
+		glUniform1f(glGetUniformLocation(m_programCull, "u_gridMaxDist"), 120.0f);
 		glm::vec3 camPos = cam->viewOrig();
 		glUniform3fv(glGetUniformLocation(m_programCull, "u_cameraPos"), 1, &camPos[0]);
 
-		// [­×¥¿] ±N Slime Uniform ²¾¨ì³o¸Ì (Dispatch ¤§«e)
+		// [ä¿®æ­£] å°‡ Slime Uniform ç§»åˆ°é€™è£¡ (Dispatch ä¹‹å‰)
 		// ---------------------------------------------------------
 		glUniform3fv(glGetUniformLocation(m_programCull, "u_slimePos"), 1, &m_slimePos[0]);
 		glUniform1f(glGetUniformLocation(m_programCull, "u_slimeRadius"), 2.0f);
 		// ---------------------------------------------------------
 
-		// --- [­×¥¿] Bind Buffers (ÄY®æ¹ïÀ³ Shader) ---
+		// --- [ä¿®æ­£] Bind Buffers (åš´æ ¼å°æ‡‰ Shader) ---
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_ssbo_AllPlants);  // Binding 0: Source
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_ssbo_Visible);    // Binding 1: Visible Dest
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_ssbo_Indirect);   // Binding 2: Cmds
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_ssbo_Counter);    // Binding 3: Counts
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, m_ssbo_CutMask);    // <<< ·s¼W¡GCutMask
-		// Binding 4: °Ñ¦Òµª®×ÁÙ¦³¤@­Ó InstanceOffset Buffer¡A¦pªG§A¨S¦³ÃB¥~ªº VBO¡A¥i¥H¥ı¤£¸j¡A©ÎªÌ§â m_ssbo_Visible ¸j¤W¥h¸Õ¸Õ (¦]¬°µ²ºc¬Û¦ü)
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, m_ssbo_CutMask);    // <<< æ–°å¢ï¼šCutMask
+		// Binding 4: åƒè€ƒç­”æ¡ˆé‚„æœ‰ä¸€å€‹ InstanceOffset Bufferï¼Œå¦‚æœä½ æ²’æœ‰é¡å¤–çš„ VBOï¼Œå¯ä»¥å…ˆä¸ç¶ï¼Œæˆ–è€…æŠŠ m_ssbo_Visible ç¶ä¸Šå»è©¦è©¦ (å› ç‚ºçµæ§‹ç›¸ä¼¼)
 
 		// Dispatch
 		glDispatchCompute((GLuint)(m_allInstancesCPU.size() + 255) / 256, 1, 1);
@@ -820,21 +820,21 @@ namespace INANOA {
 		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT);
 		glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 
-		// 3. °õ¦æ UpdateCmd Shader
+		// 3. åŸ·è¡Œ UpdateCmd Shader
 		glUseProgram(m_programUpdateCmd);
 
-		// --- [­×¥¿] Bind Buffers (ÄY®æ¹ïÀ³ Shader) ---
+		// --- [ä¿®æ­£] Bind Buffers (åš´æ ¼å°æ‡‰ Shader) ---
 		// update_cmd.comp:
 		// layout(std430, binding = 2) buffer DrawCommands
 		// layout(std430, binding = 3) buffer VisibleCount
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_ssbo_Indirect);   // Binding 2: Cmds
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_ssbo_Counter);    // Binding 3: Counts
 
-		glDispatchCompute(3, 1, 1); // °Ñ¦Òµª®× local_size_x = 3¡A©Ò¥H Dispatch 1 ´N°÷¤F
+		glDispatchCompute(3, 1, 1); // åƒè€ƒç­”æ¡ˆ local_size_x = 3ï¼Œæ‰€ä»¥ Dispatch 1 å°±å¤ äº†
 
 		glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 		glUseProgram(prevProgram);
-		// ====== ¦b³o¸Ì¦L¥X¥Ø«e GPU ¤Wªº instanceCount ======
+		// ====== åœ¨é€™è£¡å°å‡ºç›®å‰ GPU ä¸Šçš„ instanceCount ======
 		//debugIndirectCmd(m_ssbo_Indirect);
 	}
 
@@ -845,7 +845,7 @@ namespace INANOA {
 	{
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectBuf);
 
-		IndirectDrawCmd cmds[3];   // <-- ¤@©w­n¦b³o¸Ì«Å§i
+		IndirectDrawCmd cmds[3];   // <-- ä¸€å®šè¦åœ¨é€™è£¡å®£å‘Š
 		glGetBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0,
 			sizeof(cmds), cmds);
 
@@ -863,10 +863,10 @@ namespace INANOA {
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 	}
 
-	// Åª¨ú³æ±i 2D ¶K¹Ï (¥Î©ó¥vµÜ©i)
+	// è®€å–å–®å¼µ 2D è²¼åœ– (ç”¨æ–¼å²èŠå§†)
 	GLuint RenderingOrderExp::loadTexture2D(const std::string& filename) {
 		int w, h, comp;
-		// ±j¨îÅª¨ú¬° RGBA (4 channels)
+		// å¼·åˆ¶è®€å–ç‚º RGBA (4 channels)
 		unsigned char* data = stbi_load(filename.c_str(), &w, &h, &comp, 4);
 		if (!data) {
 			printf("Failed to load texture: %s\n", filename.c_str());
@@ -877,13 +877,13 @@ namespace INANOA {
 		glGenTextures(1, &tex);
 		glBindTexture(GL_TEXTURE_2D, tex);
 
-		// ³]©w°Ñ¼Æ (Repeat + Linear Mipmap)
+		// è¨­å®šåƒæ•¸ (Repeat + Linear Mipmap)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// ¤W¶Ç¸ê®Æ
+		// ä¸Šå‚³è³‡æ–™
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -892,29 +892,29 @@ namespace INANOA {
 	}
 
 	bool RenderingOrderExp::initSlimeResources() {
-		// 1. ¸ü¤J Mesh (¨Ï¥Î§Aªº loadOBJ ¨ç¦¡)
+		// 1. è¼‰å…¥ Mesh (ä½¿ç”¨ä½ çš„ loadOBJ å‡½å¼)
 		if (!loadOBJ("assets/models/foliages/slime.obj", m_meshSlime)) {
 			printf("Failed to load slime.obj\n");
 			return false;
 		}
 
-		// 2. ¸ü¤J Texture (¨Ï¥Î§Aªº loadTexture2D ¨ç¦¡)
+		// 2. è¼‰å…¥ Texture (ä½¿ç”¨ä½ çš„ loadTexture2D å‡½å¼)
 		m_texSlime = loadTexture2D("assets/textures/slime_albedo.jpg");
 		if (m_texSlime == 0) {
 			printf("Failed to load slime texture\n");
 			return false;
 		}
 
-		// 3. ±Ò¥Î­y¸ñ°Êµe
+		// 3. å•Ÿç”¨è»Œè·¡å‹•ç•«
 		m_slimeTrajectory.enable(true);
 
 		return true;
 	}
 
-	// ªì©l¤Æ Shader (»İ­n¥t¥~¼gÂ²³æªº slime.vert/frag)
+	// åˆå§‹åŒ– Shader (éœ€è¦å¦å¤–å¯«ç°¡å–®çš„ slime.vert/frag)
 	bool RenderingOrderExp::initSlimeShader() {
-		// °²³]§Ú­Ì¦@¥Î foliage shader ªºÅŞ¿è¡A©ÎªÌ¼g¤@­ÓÂ²³æªº
-		// «ØÄ³·s«Ø shaders/slime.vert ©M slime.frag
+		// å‡è¨­æˆ‘å€‘å…±ç”¨ foliage shader çš„é‚è¼¯ï¼Œæˆ–è€…å¯«ä¸€å€‹ç°¡å–®çš„
+		// å»ºè­°æ–°å»º shaders/slime.vert å’Œ slime.frag
 		m_programSlime = createShader("shaders/slime_vert.glsl", "shaders/slime_frag.glsl");
 		return m_programSlime != 0;
 	}
@@ -930,25 +930,25 @@ namespace INANOA {
 
 		glUseProgram(m_programSlime);
 
-		// ³]©w¯x°}
+		// è¨­å®šçŸ©é™£
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
-		// ¥vµÜ©i¥i¯à»İ­n©ñ¤j¤@ÂI (¬İ¼Ò«¬¤j¤p¦Ó©w¡A°²³] 1.0)
+		// å²èŠå§†å¯èƒ½éœ€è¦æ”¾å¤§ä¸€é» (çœ‹æ¨¡å‹å¤§å°è€Œå®šï¼Œå‡è¨­ 1.0)
 		// model = glm::scale(model, glm::vec3(2.0f)); 
 
 		glUniformMatrix4fv(glGetUniformLocation(m_programSlime, "u_Proj"), 1, GL_FALSE, &cam->projMatrix()[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(m_programSlime, "u_View"), 1, GL_FALSE, &cam->viewMatrix()[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(m_programSlime, "u_Model"), 1, GL_FALSE, &model[0][0]);
 
-		// ·s¼W¡G¬Û¾÷¦ì¸mµ¹ Phong ¥Î
+		// æ–°å¢ï¼šç›¸æ©Ÿä½ç½®çµ¦ Phong ç”¨
 		glm::vec3 viewPos = cam->viewOrig();
 		glUniform3fv(glGetUniformLocation(m_programSlime, "u_ViewPos"), 1, &viewPos[0]);
 
-		// ¸j©w¶K¹Ï
+		// ç¶å®šè²¼åœ–
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_texSlime);
 		glUniform1i(glGetUniformLocation(m_programSlime, "u_Tex"), 0);
 
-		// Ã¸»s
+		// ç¹ªè£½
 		glBindVertexArray(m_meshSlime.vao);
 		glDrawElements(GL_TRIANGLES, m_meshSlime.indexCount, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
@@ -956,19 +956,19 @@ namespace INANOA {
 	}
 
 	// -----------------------------------------------------------------------------
-// §â m_meshes[0..2] ªº VBO/EBO ¾ã¦X¦¨¤@­Ó¤j VAO
-// ª`·N¡G¥u¬Oªì©l¤Æ®É°µ¤@¦¸¡A¦hÅª¤@ÂI GPU ¸ê®Æ¨SÃö«Y¡C
+// æŠŠ m_meshes[0..2] çš„ VBO/EBO æ•´åˆæˆä¸€å€‹å¤§ VAO
+// æ³¨æ„ï¼šåªæ˜¯åˆå§‹åŒ–æ™‚åšä¸€æ¬¡ï¼Œå¤šè®€ä¸€é» GPU è³‡æ–™æ²’é—œä¿‚ã€‚
 // -----------------------------------------------------------------------------
 	bool RenderingOrderExp::buildFoliageMultiDrawVAO()
 	{
-		// ­n¸ò loadOBJ ¸Ìªº layout ¤@¼Ë
+		// è¦è·Ÿ loadOBJ è£¡çš„ layout ä¸€æ¨£
 		struct VertexLayout {
 			glm::vec3 p;
 			glm::vec3 n;
 			glm::vec2 t;
 		};
 
-		// ¥ı°İ¨C­Ó mesh ªº VBO / EBO ¤j¤p¡A­pºâÁ`ªø«×
+		// å…ˆå•æ¯å€‹ mesh çš„ VBO / EBO å¤§å°ï¼Œè¨ˆç®—ç¸½é•·åº¦
 		GLint vboSize[3] = { 0,0,0 };
 		GLint eboSize[3] = { 0,0,0 };
 		size_t totalVboBytes = 0;
@@ -990,48 +990,48 @@ namespace INANOA {
 		if (totalVboBytes == 0 || totalIndexCount == 0)
 			return false;
 
-		// ·Ç³Æ¦X¨Ö«áªº¤j buffer
+		// æº–å‚™åˆä½µå¾Œçš„å¤§ buffer
 		std::vector<unsigned char> allVerts(totalVboBytes);
 		std::vector<GLuint>        allIndices(totalIndexCount);
 
-		// ¥Ø«e¤j buffer ¤¤ªº offset¡]¥H¡u³»ÂI¼Æ¡v¬°³æ¦ì¡^
+		// ç›®å‰å¤§ buffer ä¸­çš„ offsetï¼ˆä»¥ã€Œé ‚é»æ•¸ã€ç‚ºå–®ä½ï¼‰
 		size_t currentVertexOffset = 0;
 		size_t currentIndexOffset = 0;
 
 		for (int i = 0; i < 3; ++i) {
-			// ------------- §â²Ä i ­Ó mesh ªº VBO Åª¥X¨Ó -------------
+			// ------------- æŠŠç¬¬ i å€‹ mesh çš„ VBO è®€å‡ºä¾† -------------
 			glBindBuffer(GL_ARRAY_BUFFER, m_meshes[i].vbo);
 
 			std::vector<unsigned char> tmpVerts(vboSize[i]);
 			glGetBufferSubData(GL_ARRAY_BUFFER, 0, vboSize[i], tmpVerts.data());
 
-			// bytes -> ©ñ¨ì¤j VBO ¤¤¦X¾Aªº¦ì¸m
+			// bytes -> æ”¾åˆ°å¤§ VBO ä¸­åˆé©çš„ä½ç½®
 			size_t dstByteOffset = currentVertexOffset * sizeof(VertexLayout);
 			std::memcpy(allVerts.data() + dstByteOffset, tmpVerts.data(), vboSize[i]);
 
-			// ²Ä i ºØªº baseVertex¡]¥H¡u³»ÂI index¡v­p¡^
+			// ç¬¬ i ç¨®çš„ baseVertexï¼ˆä»¥ã€Œé ‚é» indexã€è¨ˆï¼‰
 			m_baseVertex[i] = (GLuint)currentVertexOffset;
 
-			// ------------- §â²Ä i ­Ó mesh ªº EBO Åª¥X¨Ó -------------
+			// ------------- æŠŠç¬¬ i å€‹ mesh çš„ EBO è®€å‡ºä¾† -------------
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshes[i].ebo);
 
 			size_t idxCount = (size_t)eboSize[i] / sizeof(GLuint);
 			std::vector<GLuint> tmpIdx(idxCount);
 			glGetBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, eboSize[i], tmpIdx.data());
 
-			// ±N index ¥[¤W vertex offset «á¥á¨ì¤j index buffer
-			m_firstIndex[i] = (GLuint)currentIndexOffset;  // ³o¤@¬qªº index °_ÂI
+			// å°‡ index åŠ ä¸Š vertex offset å¾Œä¸Ÿåˆ°å¤§ index buffer
+			m_firstIndex[i] = (GLuint)currentIndexOffset;  // é€™ä¸€æ®µçš„ index èµ·é»
 
 			for (size_t k = 0; k < idxCount; ++k) {
 				allIndices[currentIndexOffset + k] = tmpIdx[k] + (GLuint)currentVertexOffset;
 			}
 
-			// ²Ö¥[ offset
+			// ç´¯åŠ  offset
 			currentVertexOffset += (size_t)vboSize[i] / sizeof(VertexLayout);
 			currentIndexOffset += idxCount;
 		}
 
-		// «Ø¥ß¦X¨Ö«áªº VAO / VBO / EBO
+		// å»ºç«‹åˆä½µå¾Œçš„ VAO / VBO / EBO
 		if (m_foliageVAO) {
 			glDeleteVertexArrays(1, &m_foliageVAO);
 			glDeleteBuffers(1, &m_foliageVBO);
@@ -1053,7 +1053,7 @@ namespace INANOA {
 			allIndices.data(),
 			GL_STATIC_DRAW);
 
-		// ³]©w attribute layout¡A¸ò loadOBJ ¸Ìªº¤@¼Ë
+		// è¨­å®š attribute layoutï¼Œè·Ÿ loadOBJ è£¡çš„ä¸€æ¨£
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 			sizeof(VertexLayout),
